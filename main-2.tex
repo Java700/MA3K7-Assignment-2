@@ -1,0 +1,179 @@
+
+\documentclass[11pt]{article}
+
+%####### DON'T CHANGE MARGIN SETTINGS ###########
+\newcommand{\keywordfont}{\textsc}
+\newcommand{\keyword}[1]{%
+  \marginpar{\raggedright\small\keywordfont{#1}}}
+\reversemarginpar
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, outer=2cm, inner=3.3cm, marginparwidth=72pt, heightrounded]{geometry}
+%#################################
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{enumitem}
+
+\newtheorem{claim}{Claim}
+\newtheorem{conjecture}{Conjecture}
+
+
+\begin{document}
+
+\Large
+\begin{center}
+\textbf{MA3K7 Assignment 2: Number Path}
+\\
+Jack Turner (5600870)
+\end{center}
+\normalsize
+
+\section{Entry}
+
+From the statement of the problem \keyword{I KNOW} ,
+\begin{itemize}
+  \item The path consists of the positive integers, starting at position 1.
+  \item Each fair-coin flip gives a step of either 1 or 2, each with probability $1/2$.
+  \item If the walker is at position $m$ and the coin shows $n$, the walker moves to position $m+n$. The walker never moves to the left.
+\end{itemize}
+
+Let $a_n$ be the probability of ever landing on position $n$, starting from position 1. \keyword{NOTATION} The probability I am after is therefore $a_{26}$. At the beginning of the path, $a_1=1$, since the walker starts at 1, and $a_2=1/2$, since the walker reaches 2 exactly when the first flip gives a step of 1.
+
+I want \keyword{I WANT} to find the probability of landing on 26 by following how the probabilities develop from the start of the path. Rather than beginning with conditions near 26, I will first work out the probabilities of reaching the early positions and look for a pattern. I suspect that the pattern can be given as a recurrence, I can use it to calculate the probability for the 26th position and then check that the result makes sense.
+
+\section{Attack}
+
+Starting at position 1 \keyword{TRY}, the probability of reaching position 1 is $a_1=1$ (because you start on that step), and the probability of reaching position 2 is $a_2=1/2$. To land on any position $n\geq 3$, the final move must come either from position $n-1$ by a step of 1 or from position $n-2$ by a step of 2. These two possibilities will be disjoint, so
+\[
+ a_n=\frac12a_{n-1}+\frac12a_{n-2},\qquad n\geq 3.
+\]
+Using this rule from the beginning gives
+\[
+ a_3=\frac12a_2+\frac12a_1=\frac34,\qquad
+ a_4=\frac12a_3+\frac12a_2=\frac58.
+\]
+Therefore the first few probabilities are $1,\frac12,\frac34,\frac58,\ldots$. I suspect the values to tend to a limit which is backed up by these first 4 values that I've found.
+
+The recurrence uses only the two previous probabilities \keyword{AHA}, so the entire sequence can be generated from the starting values $a_1=1$ and $a_2=1/2$. The first few terms suggest that the probabilities approach $2/3$, with an slight offset that gets smaller each time. To turn this observation into an exact result, I can solve the recurrence rather than relying on the pattern alone.
+
+I can solve \keyword{PLAN} the recurrence by trying a solution of the form $a_n=r^{n-1}$. Substitution into
+\[
+ a_n=\frac12a_{n-1}+\frac12a_{n-2}
+\]
+gives
+\[
+ r^2=\frac12r+\frac12,
+ \qquad (r-1)(2r+1)=0.
+\]
+The roots are $1$ and $-1/2$, so the general solution has the form
+\[
+ a_n=A+B\left(-\frac12\right)^{n-1}.
+\]
+The initial values $a_1=1$ and $a_2=1/2$ determine the constants $A$ and $B$.
+
+To determine the constants, I substitute the initial values into the general solution
+\[
+a_n=A+B\left(-\frac12\right)^{n-1}.
+\]
+When \(n=1\), the initial value \(a_1=1\) gives
+\[
+A+B\left(-\frac12\right)^0=1,
+\]
+so
+\[
+A+B=1.
+\]
+When \(n=2\), the initial value \(a_2=\frac12\) gives
+\[
+A+B\left(-\frac12\right)^1=\frac12,
+\]
+so
+\[
+A-\frac12B=\frac12.
+\]
+Subtracting the second equation from the first eliminates \(A\):
+\[
+\frac32B=\frac12
+\quad\Longrightarrow\quad B=\frac13.
+\]
+Substituting this into \(A+B=1\) gives
+\[
+A=1-\frac13=\frac23.
+\]
+Therefore, the constants are \(A=\frac23\) and \(B=\frac13\), giving the exact solution
+\[
+\boxed{a_n=\frac23+\frac13\left(-\frac12\right)^{n-1}}.
+\]
+
+\section{Solution}
+
+\begin{claim}
+For every integer $n\geq 1$,
+\[
+ a_n=\frac23+\frac13\left(-\frac12\right)^{n-1}.
+\]
+\textit{Proof.} Substituting $n=1$ and $n=2$ gives $a_1=1$ and $a_2=1/2$. The expression satisfies the recurrence because its two terms correspond to the characteristic roots $1$ and $-1/2$. Since the recurrence and its two initial values determine the sequence, the formula follows.
+\end{claim}
+
+\begin{claim}
+The probability of ever landing on 26 is $a_{26}$. Applying the formula gives
+\begin{align*}
+ a_{26}
+ &=\frac23+\frac13\left(-\frac12\right)^{25}\\
+ &=\frac23-\frac{1}{3\cdot 2^{25}}\\
+ &=\boxed{\frac{22369621}{33554432}}\\
+ &\approx 0.666666657.
+\end{align*}
+Therefore the probability of ever landing on 26 is slightly less than $2/3$, and extremely close to it.
+\end{claim}
+
+The recurrence gives $a_1=1$, $a_2=1/2$, $a_3=3/4$, and $a_4=5/8$ \keyword{CHECK}, which agrees with direct reasoning at the beginning of the path. For example, the walker reaches 3 either by taking a step of 2 immediately or by taking two consecutive steps of 1, with total probability $1/2+1/4=3/4$.
+
+\section{Review}
+
+The key \keyword{REFLECT} was to start at the beginning of the path and calculate the probabilities of reaching the first few positions. This exposed a recurrence: to land on position $n$, the last move must have come from either $n-1$ or $n-2$. Solving the recurrence then converted the pattern into an exact formula.
+
+If the target were any integer \keyword{EXTENSION} $N\geq 1$ instead of 26, the same reasoning gives
+\[
+ \mathbb{P}(\text{ever land on }N)
+ =\frac23+\frac13\left(-\frac12\right)^{N-1}.
+\]
+As $N$ grows, the second term tends to zero, so the probability approaches $2/3$. The alternating sign explains why the probabilities for successive target positions alternate just above and just below this limit.
+
+The same method can be extended \keyword{GENERALISE} by changing the probabilities of the steps. Suppose a step of 1 has probability \(p\), while a step of 2 has probability \(1-p\). The recurrence becomes
+\[
+a_n=pa_{n-1}+(1-p)a_{n-2},\qquad n\geq 3,
+\]
+with initial values \(a_1=1\) and \(a_2=p\).
+
+Trying \(a_n=r^{n-1}\) gives the characteristic equation
+\[
+r^2=pr+(1-p),
+\]
+which factors as
+\[
+(r-1)(r+1-p)=0.
+\]
+The roots are \(1\) and \(p-1\), so
+\[
+a_n=A+B(p-1)^{n-1}.
+\]
+Using the initial values gives
+\[
+A+B=1,\qquad A+B(p-1)=p.
+\]
+Solving these equations yields
+\[
+A=\frac{1}{2-p},\qquad B=\frac{1-p}{2-p}.
+\]
+Therefore,
+\[
+\boxed{a_n=\frac{1+(1-p)(p-1)^{n-1}}{2-p}}.
+\]
+For \(0<p<1\), the term \((p-1)^{n-1}\) tends to zero, so the probability approaches \(1/(2-p)\). The original problem is recovered by setting \(p=1/2\).
+
+\end{document}
+```
